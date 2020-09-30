@@ -1,4 +1,4 @@
-USE [master];
+﻿USE [master];
 GO
 
 CREATE DATABASE [Egor_Petrushko];

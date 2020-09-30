@@ -1,15 +1,15 @@
-/* Вывести на экран список отделов, принадлежащих группе ‘Executive General and Administration’.*/
+п»ї/* Р’С‹РІРµСЃС‚Рё РЅР° СЌРєСЂР°РЅ СЃРїРёСЃРѕРє РѕС‚РґРµР»РѕРІ, РїСЂРёРЅР°РґР»РµР¶Р°С‰РёС… РіСЂСѓРїРїРµ вЂExecutive General and AdministrationвЂ™.*/
 SELECT [Name], [GroupName]
 FROM [HumanResources].[Department]
 WHERE [GroupName] = 'Executive General and Administration';
 
 
-/* Вывести на экран максимальное количество оставшихся часов отпуска
- у сотрудников. Назовите столбец с результатом ‘MaxVacationHours’.*/
+/* Р’С‹РІРµСЃС‚Рё РЅР° СЌРєСЂР°РЅ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РѕСЃС‚Р°РІС€РёС…СЃСЏ С‡Р°СЃРѕРІ РѕС‚РїСѓСЃРєР°
+ Сѓ СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ. РќР°Р·РѕРІРёС‚Рµ СЃС‚РѕР»Р±РµС† СЃ СЂРµР·СѓР»СЊС‚Р°С‚РѕРј вЂMaxVacationHoursвЂ™.*/
 SELECT MAX([VacationHours]) AS MaxVacationHours
 FROM [HumanResources].[Employee];
 
-/*Вывести на экран сотрудников, название позиции которых включает слово ‘Engineer’.*/
+/*Р’С‹РІРµСЃС‚Рё РЅР° СЌРєСЂР°РЅ СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ, РЅР°Р·РІР°РЅРёРµ РїРѕР·РёС†РёРё РєРѕС‚РѕСЂС‹С… РІРєР»СЋС‡Р°РµС‚ СЃР»РѕРІРѕ вЂEngineerвЂ™.*/
 SELECT [BusinessEntityID], [JobTitle], [Gender], [BirthDate], [HireDate]
 FROM [HumanResources].[Employee]
 WHERE [JobTitle] LIKE '%Engineer%';
