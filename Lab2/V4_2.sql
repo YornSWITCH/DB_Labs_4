@@ -1,10 +1,10 @@
-п»ї/* a) СЃРѕР·РґР°Р№С‚Рµ С‚Р°Р±Р»РёС†Сѓ dbo.StateProvince СЃ С‚Р°РєРѕР№ Р¶Рµ СЃС‚СЂСѓРєС‚СѓСЂРѕР№ РєР°Рє Person.StateProvince, 
- РєСЂРѕРјРµ РїРѕР»СЏ uniqueidentifier, РЅРµ РІРєР»СЋС‡Р°СЏ РёРЅРґРµРєСЃС‹, РѕРіСЂР°РЅРёС‡РµРЅРёСЏ Рё С‚СЂРёРіРіРµСЂС‹;*/
+/* a) создайте таблицу dbo.StateProvince с такой же структурой как Person.StateProvince, 
+ кроме поля uniqueidentifier, не включая индексы, ограничения и триггеры;*/
  CREATE TABLE [dbo].[StateProvince](
 	[StateProvinceID] int identity (1, 1) NOT NULL,
-	[StateProvinceCode] nchar(2) NOT NULL,
-	[CountryRegionCode] nvarchar(3) NOT NULL,
-	[IsOnlyStateProvinceFlag] Flag NOT NULL,
+	[StateProvinceCode] nchar(20) NOT NULL,
+	[CountryRegionCode] nvarchar(30) NOT NULL,
+	[IsOnlyStateProvinceFlag] [dbo].[FLAG]   NOT NULL,
 	[Name] [dbo].[Name] NOT NULL, 
 	[TerritoryID] int NOT NULL,
 	[ModifiedDate] datetime NOT NULL
@@ -12,27 +12,35 @@
 
 DROP TABLE [dbo].[StateProvince];
 
-/* b) РёСЃРїРѕР»СЊР·СѓСЏ РёРЅСЃС‚СЂСѓРєС†РёСЋ ALTER TABLE, СЃРѕР·РґР°Р№С‚Рµ РґР»СЏ С‚Р°Р±Р»РёС†С‹ dbo.StateProvince РѕРіСЂР°РЅРёС‡РµРЅРёРµ UNIQUE РґР»СЏ РїРѕР»СЏ Name;*/
+/* b) используя инструкцию ALTER TABLE, создайте для таблицы dbo.StateProvince ограничение UNIQUE для поля Name;*/
 ALTER TABLE [dbo].[StateProvince] 
 	ADD CONSTRAINT UniqueName UNIQUE (NAME);
 GO
 
-/* c) РёСЃРїРѕР»СЊР·СѓСЏ РёРЅСЃС‚СЂСѓРєС†РёСЋ ALTER TABLE, СЃРѕР·РґР°Р№С‚Рµ РґР»СЏ С‚Р°Р±Р»РёС†С‹ dbo.StateProvince РѕРіСЂР°РЅРёС‡РµРЅРёРµ РґР»СЏ РїРѕР»СЏ CountryRegionCode,
- Р·Р°РїСЂРµС‰Р°СЋС‰РµРµ Р·Р°РїРѕР»РЅРµРЅРёРµ СЌС‚РѕРіРѕ РїРѕР»СЏ С†РёС„СЂР°РјРё;*/
+/* c) используя инструкцию ALTER TABLE, создайте для таблицы dbo.StateProvince ограничение для поля CountryRegionCode,
+ запрещающее заполнение этого поля цифрами;*/
 ALTER TABLE [dbo].[StateProvince]
     ADD CONSTRAINT ConstCountryRegionCodeNotNumber CHECK ( CountryRegionCode NOT LIKE '%[0-9]%' );
 
-/* d) РёСЃРїРѕР»СЊР·СѓСЏ РёРЅСЃС‚СЂСѓРєС†РёСЋ ALTER TABLE, СЃРѕР·РґР°Р№С‚Рµ РґР»СЏ С‚Р°Р±Р»РёС†С‹ dbo.StateProvince РѕРіСЂР°РЅРёС‡РµРЅРёРµ 
- DEFAULT РґР»СЏ РїРѕР»СЏ ModifiedDate, Р·Р°РґР°Р№С‚Рµ Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ С‚РµРєСѓС‰СѓСЋ РґР°С‚Сѓ Рё РІСЂРµРјСЏ;*/
+/* d) используя инструкцию ALTER TABLE, создайте для таблицы dbo.StateProvince ограничение 
+ DEFAULT для поля ModifiedDate, задайте значение по умолчанию текущую дату и время;*/
 ALTER TABLE [dbo].[StateProvince]
 	ADD CONSTRAINT DefValueModifiedDate DEFAULT GetDate() FOR ModifiedDate;
 GO
 
-/* e) Р·Р°РїРѕР»РЅРёС‚Рµ РЅРѕРІСѓСЋ С‚Р°Р±Р»РёС†Сѓ РґР°РЅРЅС‹РјРё РёР· Person.StateProvince.  
-  Р’С‹Р±РµСЂРёС‚Рµ РґР»СЏ РІСЃС‚Р°РІРєРё С‚РѕР»СЊРєРѕ С‚Рµ РґР°РЅРЅС‹Рµ, РіРґРµ РёРјСЏ С€С‚Р°С‚Р°/РіРѕСЃСѓРґР°СЂСЃС‚РІР° СЃРѕРІРїР°РґР°РµС‚ СЃ РёРјРµРЅРµРј СЃС‚СЂР°РЅС‹/СЂРµРіРёРѕРЅР° РІ С‚Р°Р±Р»РёС†Рµ CountryRegion;*/
+/* e) заполните новую таблицу данными из Person.StateProvince.  
+  Выберите для вставки только те данные, где имя штата/государства совпадает с именем страны/региона в таблице CountryRegion;*/
 SET IDENTITY_INSERT [dbo].[StateProvince] ON;
 GO
-INSERT INTO [dbo].[StateProvince] SELECT
+INSERT INTO [dbo].[StateProvince] (
+	[StateProvinceID],
+	[StateProvinceCode],
+	[CountryRegionCode],
+	[IsOnlyStateProvinceFlag],
+	[Name],
+	[TerritoryID],
+	[ModifiedDate]
+) SELECT
 	[ST].[StateProvinceID],
 	[ST].[StateProvinceCode],
 	[ST].[CountryRegionCode],
@@ -46,7 +54,7 @@ ON [CR].[CountryRegionCode] = [ST].[CountryRegionCode]
 WHERE [CR].[Name] = [ST].[Name];
 GO
 
-/*f) СѓРґР°Р»РёС‚Рµ РїРѕР»Рµ IsOnlyStateProvinceFlag, Р° РІРјРµСЃС‚Рѕ РЅРµРіРѕ СЃРѕР·РґР°Р№С‚Рµ РЅРѕРІРѕРµ CountryNum С‚РёРїР° int РґРѕРїСѓСЃРєР°СЋС‰РµРµ null Р·РЅР°С‡РµРЅРёСЏ.*/
+/*f) удалите поле IsOnlyStateProvinceFlag, а вместо него создайте новое CountryNum типа int допускающее null значения.*/
 ALTER TABLE [dbo].[StateProvince] 
 	DROP COLUMN [IsOnlyStateProvinceFlag];
 ALTER TABLE [dbo].[StateProvince] 
